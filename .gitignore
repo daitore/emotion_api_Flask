@@ -1,0 +1,19 @@
+# 仮想環境（絶対に出さない）
+.venv/
+.env/
+
+# ローカル専用コード
+chatgpt_dict.py
+main.py
+output_excel_2.py
+
+# Excelログ
+chat_log.xlsx
+
+# Pythonのゴミ
+__pycache__/
+*.pyc
+
+# OSのゴミ
+.DS_Store
+Thumbs.db
