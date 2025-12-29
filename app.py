@@ -3,6 +3,7 @@ from io import BytesIO
 from openpyxl import Workbook
 
 app = Flask(__name__)
+app.config["JSON_AS_ASCII"] = False
 
 # 簡易感情判定関数
 def judge_emotion(text: str):
