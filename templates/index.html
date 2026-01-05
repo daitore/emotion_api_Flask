@@ -29,57 +29,54 @@
   <h2>結果</h2>
   <div id="result" class="box">ここに結果が表示されます</div>
 
-  <script>
-    const btn = document.getElementById("btn");
-    const textEl = document.getElementById("text");
-    const statusEl = document.getElementById("status");
-    const resultEl = document.getElementById("result");
+<script>
+  const btn = document.getElementById("btn");
+  const textEl = document.getElementById("text");
+  const statusEl = document.getElementById("status");
+  const resultEl = document.getElementById("result");
 
-    function show(obj) {
-  resultEl.innerHTML = `
-    <h2>判定結果</h2>
-    <div style="font-size:32px; font-weight:bold;">
-      ${obj.emotion}
-    </div>
-  `;
-}
+  function show(obj) {
+    resultEl.innerHTML = `
+      <h2>判定結果</h2>
+      <div style="font-size:32px; font-weight:bold;">
+        ${obj.emotion}
+      </div>
+    `;
+  }
 
+  btn.addEventListener("click", async () => {
+    const text = (textEl.value || "").trim();
+    if (!text) {
+      resultEl.innerHTML = '<span style="color:#b00020;">テキストを入力してね</span>';
+      return;
+    }
 
+    btn.disabled = true;
+    statusEl.textContent = "判定中…";
+    resultEl.textContent = "";
 
-    btn.addEventListener("click", async () => {
-      const text = (textEl.value || "").trim();
-      if (!text) {
-        statusEl.textContent = "";
-        resultEl.innerHTML = '<span class="error">テキストを入力してね</span>';
-        return;
+    try {
+      const res = await fetch("/api/emotion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({ text })
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        resultEl.innerHTML =
+          '<span style="color:#b00020;">' + (data.error || "エラー") + '</span>';
+      } else {
+        show(data);
       }
+    } catch (e) {
+      resultEl.innerHTML = '<span style="color:#b00020;">通信エラー</span>';
+    } finally {
+      statusEl.textContent = "";
+      btn.disabled = false;
+    }
+  });
+</script>
 
-      btn.disabled = true;
-      statusEl.textContent = "判定中…";
-      resultEl.textContent = "";
-
-      try {
-        const res = await fetch("/api/emotion", {
-          method: "POST",
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-          body: JSON.stringify({ text })
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-          // 400など
-          resultEl.innerHTML = '<span class="error">' + (data.error || "エラー") + '</span>';
-        } else {
-          show(data);
-        }
-      } catch (e) {
-        resultEl.innerHTML = '<span class="error">通信エラー：サーバーに届いてないかも</span>';
-      } finally {
-        statusEl.textContent = "";
-        btn.disabled = false;
-      }
-    });
-  </script>
 </body>
 </html>
