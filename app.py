@@ -5,6 +5,10 @@ from openpyxl import Workbook
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 
+@app.route("/")
+def index():
+    return render_template("index.html")
+
 # 簡易感情判定関数
 def judge_emotion(text: str):
     t = (text or "").strip()# 文章の前後の空白を削除
