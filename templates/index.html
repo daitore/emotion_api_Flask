@@ -36,8 +36,13 @@
     const resultEl = document.getElementById("result");
 
     function show(obj) {
-      resultEl.textContent = JSON.stringify(obj, null, 2);
-    }
+    resultEl.innerHTML = `
+  <h2>判定結果</h2>
+  <div style="font-size:32px; font-weight:bold;">
+    ${data.emotion}
+  </div>
+`;
+
 
     btn.addEventListener("click", async () => {
       const text = (textEl.value || "").trim();
