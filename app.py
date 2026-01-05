@@ -1,11 +1,11 @@
-from flask import Flask, request, render_template_string, jsonify, send_file
+from flask import Flask, request, render_template_string, jsonify, send_file,render_template
 from io import BytesIO
 from openpyxl import Workbook
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 
-@app.route("/")
+@app.get("/")
 def index():
     return render_template("index.html")
 
