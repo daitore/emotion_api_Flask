@@ -15,32 +15,30 @@
 </head>
 <body>
   <h1>Emotion API Demo</h1>
-  <p>文章を入力して「判定」を押すと、感情を返します。</p>
+<p>文章を入力して「判定」を押すと、感情を返します。</p>
 
-  <div class="row">
-    <textarea id="text" placeholder="例：今日は最高でうれしい！"></textarea>
-  </div>
+<div class="row">
+  <textarea
+    id="text"
+    rows="5"
+    cols="60"
+    placeholder="例：今日は最高でうれしい！">
+  </textarea>
+</div>
 
-  <div class="row">
-    <button id="btn">判定</button>
-    <span id="status"></span>
-  </div>
+<div class="row">
+  <button id="btn">判定</button>
+  <span id="status"></span>
+</div>
 
-  <h2>結果</h2>
-  <div id="result" class="box">ここに結果が表示されます</div>
-
-  <h2>感情判定</h2>
-
-<textarea id="text" rows="5" cols="60" placeholder="文章を入力"></textarea><br>
-<button id="btn">判定</button>
-
-<div id="status"></div>
-<div id="result"></div>
+<h2>結果</h2>
+<div id="result" class="box">ここに結果が表示されます</div>
 
 <!-- Excelダウンロード（最初は非表示） -->
 <p id="excel-area" style="display:none; margin-top:10px;">
   <a id="excel-link">Excelをダウンロード</a>
 </p>
+
 
 
 <script>
