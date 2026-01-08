@@ -1,6 +1,6 @@
 # 仮想環境・秘密情報
 .venv/
-.env/
+.env
 
 # PyCharm
 .idea/
