@@ -29,11 +29,28 @@
   <h2>結果</h2>
   <div id="result" class="box">ここに結果が表示されます</div>
 
+  <h2>感情判定</h2>
+
+<textarea id="text" rows="5" cols="60" placeholder="文章を入力"></textarea><br>
+<button id="btn">判定</button>
+
+<div id="status"></div>
+<div id="result"></div>
+
+<!-- Excelダウンロード（最初は非表示） -->
+<p id="excel-area" style="display:none; margin-top:10px;">
+  <a id="excel-link">Excelをダウンロード</a>
+</p>
+
+
 <script>
+  <script>
   const btn = document.getElementById("btn");
   const textEl = document.getElementById("text");
   const statusEl = document.getElementById("status");
   const resultEl = document.getElementById("result");
+  const excelArea = document.getElementById("excel-area");
+  const excelLink = document.getElementById("excel-link");
 
   function show(obj) {
     resultEl.innerHTML = `
@@ -42,41 +59,38 @@
         ${obj.emotion}
       </div>
     `;
+
+    // ★ Excelダウンロード用リンクを設定
+    const text = textEl.value;
+    excelLink.href = `/download.xlsx?text=${encodeURIComponent(text)}`;
+    excelArea.style.display = "block";
   }
 
   btn.addEventListener("click", async () => {
     const text = (textEl.value || "").trim();
-    if (!text) {
-      resultEl.innerHTML = '<span style="color:#b00020;">テキストを入力してね</span>';
-      return;
-    }
+    if (!text) return;
 
-    btn.disabled = true;
+    excelArea.style.display = "none"; // 前回分を隠す
     statusEl.textContent = "判定中…";
-    resultEl.textContent = "";
 
-    try {
-      const res = await fetch("/api/emotion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({ text })
-      });
+    const res = await fetch("/api/emotion", {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ text })
+    });
 
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        resultEl.innerHTML =
-          '<span style="color:#b00020;">' + (data.error || "エラー") + '</span>';
-      } else {
-        show(data);
-      }
-    } catch (e) {
-      resultEl.innerHTML = '<span style="color:#b00020;">通信エラー</span>';
-    } finally {
-      statusEl.textContent = "";
-      btn.disabled = false;
+    const data = await res.json();
+    statusEl.textContent = "";
+
+    if (res.ok) {
+      show(data);
+    } else {
+      resultEl.textContent = data.error || "エラー";
     }
   });
 </script>
+
+  script>
 
 </body>
 </html>
