@@ -154,7 +154,8 @@
   </div>
 
   <div class="row">
-    <button id="btn">判定</button>
+    <button id="btn" type="button">判定</button>
+
     <span id="status"></span>
   </div>
 
@@ -168,61 +169,43 @@
 </div>
 
 
-  <script>
-    const API_URL = "/api/emotion";
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("btn");
+  const textEl = document.getElementById("text");
+  const resultEl = document.getElementById("result");
+  const statusEl = document.getElementById("status");
+  const excelArea = document.getElementById("excel-area");
+  const excelLink = document.getElementById("excel-link");
 
-    const btn = document.getElementById("btn");
-    const textEl = document.getElementById("text");
-    const statusEl = document.getElementById("status");
-    const resultEl = document.getElementById("result");
-    const excelArea = document.getElementById("excel-area");
-    const excelLink = document.getElementById("excel-link");
+  function showEmotionOnly(obj) {
+    resultEl.innerHTML = `<div class="emotion">${obj.emotion}</div>`;
+    const text = (textEl.value || "").trim();
+    excelLink.href = `/download.xlsx?text=${encodeURIComponent(text)}`;
+    excelArea.style.display = "block";
+  }
 
-#APIの結果を表示する専用関数
-    function showEmotionOnly(obj) {
-   resultEl.innerHTML = `<div class="emotion">${obj.emotion}</div>`;
+  btn.addEventListener("click", async () => {
+    const text = (textEl.value || "").trim();
+    if (!text) {
+      resultEl.textContent = "文章を入力してね";
+      return;
+    }
 
-   const text = (textEl.value || "").trim();
-   excelLink.href = `/download.xlsx?text=${encodeURIComponent(text)}`;
-   excelArea.style.display = "block";
-}
+    statusEl.textContent = "判定中…";
 
-
-    btn.addEventListener("click", async () => {
-      const text = (textEl.value || "").trim();
-      if (!text) {
-        resultEl.textContent = "文章を入力してね";
-        excelArea.style.display = "none";
-        return;
-      }
-
-      btn.disabled = true;
-      statusEl.textContent = "判定中…";
-      excelArea.style.display = "none";
-
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-          body: JSON.stringify({ text })
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-          resultEl.textContent = data.error || "エラー";
-          return;
-        }
-
-        showEmotionOnly(data);
-      } catch (e) {
-        resultEl.textContent = "通信エラー";
-      } finally {
-        statusEl.textContent = "";
-        btn.disabled = false;
-      }
+    const res = await fetch("/api/emotion", {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({ text })
     });
-  </script>
+
+    const data = await res.json();
+    showEmotionOnly(data);
+    statusEl.textContent = "";
+  });
+});
+</script>
 
 </body>
 </html>
