@@ -1,8 +1,8 @@
-# 強い感情だけを拾う」設計,弱い不安,静かな困惑は 中立に落ちやすい。
+# emotion.py
 import re
 
 def _normalize(s: str) -> str:
-    """ゆれ吸収：全角/半角や空白を整えて、小文字化（英字用）"""
+    """ゆれ吸収：空白を整える（最低限）"""
     s = (s or "").strip()
     s = s.replace("　", " ")
     s = re.sub(r"\s+", " ", s)
@@ -11,36 +11,35 @@ def _normalize(s: str) -> str:
 def judge_emotion(text: str):
     t = _normalize(text)
 
-    # まずは “ゆれ” を辞書側で吸収（漢字・ひらがな両方を入れる）
+    # ざっくり辞書（漢字/ひらがなゆれも少し入れる）
     emotion_words = {
         "喜び": ["嬉しい", "うれしい", "やった", "最高", "助かった", "できた", "成功", "よかった", "ありがとう"],
         "期待": ["楽しみ", "期待", "やってみたい", "いけそう", "挑戦", "ワクワク", "わくわく"],
         "不安": ["不安", "怖い", "こわい", "心配", "やばい", "焦る", "眠れない"],
-        "怒り": ["ムカつく", "腹立つ", "イライラ", "最悪", "ふざけるな", "怒", "むかつく"],
+        "怒り": ["ムカつく", "むかつく", "腹立つ", "イライラ", "最悪", "ふざけるな", "怒"],
         "悲しみ": ["悲しい", "かなしい", "つらい", "しんどい", "泣", "落ち込む", "へこむ"],
         "困惑": ["わからない", "分からない", "意味不明", "困った", "どうすれば", "詰んだ", "混乱"],
     }
 
-    # 強調語（ちょい加点）
+    # 強調語（少し加点）
     boosters = ["超", "めっちゃ", "すごく", "かなり", "本当に", "マジで"]
 
-    # 否定語（直前にあると減点）
+    # 否定語（近くにあると減点）
     negations = ["ない", "じゃない", "ではない", "なく", "なかった", "ません"]
 
-    # スコア初期化
     scores = {k: 0 for k in emotion_words}
 
-    # 記号ボーナス
+    # 記号の雰囲気ボーナス
     if "!" in t or "！" in t:
         scores["喜び"] += 1
         scores["期待"] += 1
-        scores["怒り"] += 1  # 怒りの強調にもなる
     if "?" in t or "？" in t:
         scores["困惑"] += 1
         scores["不安"] += 1
 
-    # 強調語ボーナス（文章に含まれてたら少し全体底上げ）
+    # 強調語が入ってた回数（最大2まで使う）
     boost_count = sum(1 for b in boosters if b in t)
+    boost_bonus = min(boost_count, 2)
 
     # メイン判定
     for emo, words in emotion_words.items():
@@ -49,25 +48,31 @@ def judge_emotion(text: str):
             if idx == -1:
                 continue
 
-            # 基本点
             add = 2
+            add += boost_bonus
 
-            # 強調語があると少し加点
-            add += min(boost_count, 2)  # 最大+2くらいで十分
-
-            # 直後/近くに否定があると減点（ざっくり）
-            window = t[idx: idx + len(w) + 6]  # キーワードの後ろ少し
+            # キーワードのすぐ後ろに否定があると、ちょい減点（改善②：-3→-1に弱め）
+            window = t[idx: idx + len(w) + 6]
             if any(ng in window for ng in negations):
-                add -= 1  # 否定ならマイナスにする
+                add -= 1
 
             scores[emo] += add
 
-    # マイナスになりすぎたら0に丸める（見やすくする）
+    # マイナスは0に丸める（見た目用）
     for k in scores:
         if scores[k] < 0:
             scores[k] = 0
 
-    # ベストを決める
-    best = max(scores, key=scores.get)
-    emotion = "中立" if scores[best] == 0 else best
+    # ★ 主・副 感情の判定（副は2点以上のときだけ表示）★
+    sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    top1, top2 = sorted_scores[0], sorted_scores[1]
+
+    if top2[1] >= 2:
+        emotion = f"主：{top1[0]} / 副：{top2[0]}"
+    else:
+        emotion = f"主：{top1[0]}"
+
     return emotion, scores
+
+
+
