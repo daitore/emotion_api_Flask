@@ -5,6 +5,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const statusEl = document.getElementById("status");
   const excelArea = document.getElementById("excel-area");
   const excelLink = document.getElementById("excel-link");
+  const clearBtn = document.getElementById("clearBtn");
+  const KEY = "emotion_text";
+
+  // 入力したら保存
+  textEl.addEventListener("input", () => {
+  localStorage.setItem(KEY, textEl.value);
+  });
+
+  // 起動時に復元
+  textEl.value = localStorage.getItem(KEY) || "";
+
+  // クリア
+  clearBtn.addEventListener("click", () => {
+  localStorage.removeItem(KEY);
+  textEl.value = "";
+  resultEl.textContent = "ここに結果が表示されます";
+  excelArea.style.display = "none";
+  });
+
 
   const EMOJI_MAP = {
     "喜び": "😊",
