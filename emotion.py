@@ -42,21 +42,27 @@ def judge_emotion(text: str):
     boost_bonus = min(boost_count, 2)
 
     # メイン判定
+    word_hit = False
+
     for emo, words in emotion_words.items():
         for w in words:
             idx = t.find(w)
             if idx == -1:
                 continue
 
-            add = 2
-            add += boost_bonus
+            word_hit = True
 
-            # キーワードのすぐ後ろに否定があると、ちょい減点（改善②：-3→-1に弱め）
+            add = 2 + boost_bonus
+
             window = t[idx: idx + len(w) + 6]
             if any(ng in window for ng in negations):
                 add -= 1
 
             scores[emo] += add
+
+    # ★ 辞書ワードが1回もヒットしてなければ中立
+    if not word_hit:
+        return "中立", scores
 
     # マイナスは0に丸める（見た目用）
     for k in scores:

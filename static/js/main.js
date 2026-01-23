@@ -36,19 +36,22 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   function showEmotionOnly(obj) {
-    const emo = obj.emotion || "中立";
-    const emoji = EMOJI_MAP[emo] || "😐";
+  const label = obj.label || "中立";   // 表示用
+  const main = obj.main || "中立";     // CSS用（主）
 
-    resultEl.innerHTML = `
-      <div class="emotion emotion-${emo}">
-        ${emoji} ${emo}
-      </div>
-    `;
+  const emoji = EMOJI_MAP[main] || "😐";
 
-    const text = (textEl.value || "").trim();
-    excelLink.href = `/download.xlsx?text=${encodeURIComponent(text)}`;
-    excelArea.style.display = "block";
-  }
+  resultEl.innerHTML = `
+    <div class="emotion emotion-${main}">
+      ${emoji} ${label}
+    </div>
+  `;
+
+  const text = (textEl.value || "").trim();
+  excelLink.href = `/download.xlsx?text=${encodeURIComponent(text)}`;
+  excelArea.style.display = "block";
+}
+
 
   btn.addEventListener("click", async () => {
     const text = (textEl.value || "").trim();

@@ -21,9 +21,27 @@ def api_emotion():
     if not text:
         return jsonify({"error": "text が空です"}), 400
 
-    emotion, _scores = judge_emotion(text)
+    emotion, scores = judge_emotion(text)
     # 返すのは emotion だけ（シンプル）
-    return jsonify({"emotion": emotion})
+    # 例：emotion が "主：喜び / 副：不安" みたいに返ってくる想定
+    label = emotion
+
+    main = "中立"
+    sub = None
+
+    if emotion.startswith("主："):
+        main = emotion.split("主：")[1].split(" / ")[0].strip()
+        if "副：" in emotion:
+            sub = emotion.split("副：")[1].strip()
+    else:
+        main = emotion
+
+    return jsonify({
+        "label": label,  # 表示用
+        "main": main,  # CSS用（主）
+        "sub": sub,  # 副（使いたい時用）
+        "scores": scores
+    })
 
 
 # Excelダウンロード
