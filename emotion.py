@@ -60,8 +60,26 @@ def judge_emotion(text: str):
 
             scores[emo] += add
 
-    # ★ 辞書ワードが1回もヒットしてなければ中立
+    # ★ 辞書ワードが0回なら「記号だけ判定」をする
     if not word_hit:
+        ex = t.count("!") + t.count("！")
+        qu = t.count("?") + t.count("？")
+
+        # 記号の組み合わせ
+        if ("!?" in t) or ("！？" in t) or ("?!" in t) or ("？！" in t):
+            return "困惑", scores
+
+        # 強いびっくり
+        if ex >= 2 and qu == 0:
+            return "期待", scores  # 喜びでもOK（好みに合わせて）
+        # 強いはてな
+        if qu >= 2 and ex == 0:
+            return "困惑", scores
+
+        # どちらも少しある（迷い）
+        if ex >= 2 and qu >= 2:
+            return "困惑", scores
+
         return "中立", scores
 
     # マイナスは0に丸める（見た目用）
