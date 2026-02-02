@@ -16,27 +16,29 @@ def index():
 # API（JSON）
 @app.post("/api/emotion")
 def api_emotion():
-    data = request.get_json(silent=True) or {}
-    text = (data.get("text") or "").strip()
+    data = request.get_json(silent=True) or {}#APIに送られてきた JSONデータ を受け取る,失敗したら空の {} にする
+    text = (data.get("text") or "").strip()# text キーの値を取得し、空白を取り除く
     if not text:
         return jsonify({"error": "text が空です"}), 400
 
-    emotion, scores = judge_emotion(text)
+    emotion, scores = judge_emotion(text)# 感情判定ロジックを呼び出す
+
     # 返すのは emotion だけ（シンプル）
     # 例：emotion が "主：喜び / 副：不安" みたいに返ってくる想定
     label = emotion
 
-    main = "中立"
+    main = "中立"# デフォルト値
     sub = None
 
+    # 主、副に分ける
     if emotion.startswith("主："):
-        main = emotion.split("主：")[1].split(" / ")[0].strip()
+        main = emotion.split("主：")[1].split(" / ")[0].strip()# 主の部分を抽出
         if "副：" in emotion:
-            sub = emotion.split("副：")[1].strip()
+            sub = emotion.split("副：")[1].strip()# 副の部分を抽出
     else:
-        main = emotion
+        main = emotion# 喜び等単独ならそれを主として扱う
 
-    return jsonify({
+    return jsonify({ # 結果をJSONで返す
         "label": label,  # 表示用
         "main": main,  # CSS用（主）
         "sub": sub,  # 副（使いたい時用）
