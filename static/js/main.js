@@ -1,27 +1,27 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("btn");
+document.addEventListener("DOMContentLoaded", () => { // HTMLが全部読み込まれたら実行
+  const btn = document.getElementById("btn"); //最初にHTMLの部品を全部読込む
   const textEl = document.getElementById("text");
   const resultEl = document.getElementById("result");
   const statusEl = document.getElementById("status");
   const excelArea = document.getElementById("excel-area");
   const excelLink = document.getElementById("excel-link");
   const clearBtn = document.getElementById("clearBtn");
-  const KEY = "emotion_text";
+  const KEY = "emotion_text";// ローカルストレージのキー名
 
-  // 入力したら保存
+  // 入力したらlocalStorage に自動保存
   textEl.addEventListener("input", () => {
   localStorage.setItem(KEY, textEl.value);
   });
 
-  // 起動時に復元
+  // 起動時に復元なければ空文字
   textEl.value = localStorage.getItem(KEY) || "";
 
-  // クリア
+  // クリアボタンの流れ
   clearBtn.addEventListener("click", () => {
-  localStorage.removeItem(KEY);
-  textEl.value = "";
+  localStorage.removeItem(KEY); // ローカルストレージから削除
+  textEl.value = ""; // テキストエリアを空に
   resultEl.textContent = "ここに結果が表示されます";
-  excelArea.style.display = "none";
+  excelArea.style.display = "none"; // エクセルダウンロードエリアを非表示
   });
 
 
