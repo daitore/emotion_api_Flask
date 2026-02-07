@@ -1,0 +1,145 @@
+ :root{
+    --bg:#0b1020;
+    --card:#121a33;
+    --text:#e9ecf1;
+    --muted:#a9b1c7;
+    --line:#243057;
+    --accent:#5aa7ff;
+    --danger:#ff5a7a;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    color:var(--text);
+    background: radial-gradient(1200px 800px at 20% 10%, #18234a 0%, var(--bg) 55%);
+  }
+
+  .wrap{
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 18px 60px;
+  }
+
+  .header{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    justify-content:space-between;
+    margin-bottom: 18px;
+  }
+
+  h1{
+    margin:0;
+    font-size: 28px;
+    letter-spacing: .2px;
+  }
+
+  .sub{
+    margin: 8px 0 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .card{
+    background: color-mix(in srgb, var(--card) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  }
+
+  textarea{
+    width:100%;
+    min-height: 140px;
+    resize: vertical;
+    background: #0f1630;
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    font-size: 16px;
+    outline: none;
+  }
+  textarea:focus{
+    border-color: color-mix(in srgb, var(--accent) 75%, var(--line));
+    box-shadow: 0 0 0 4px rgba(90,167,255,.18);
+  }
+
+  .row{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-top: 12px;
+  }
+
+  button{
+    border: 0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #081022;
+    background: linear-gradient(180deg, #7bc0ff 0%, var(--accent) 100%);
+    cursor: pointer;
+  }
+  button:disabled{
+    opacity: .55;
+    cursor: not-allowed;
+  }
+
+  #status{
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  h2{
+    margin: 18px 0 10px;
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 700;
+    letter-spacing: .2px;
+  }
+
+  .box{
+    background: #0f1630;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+  }
+
+  /* 結果（大きく見せる） */
+  .emotion{
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: .5px;
+  }
+  .emotion { font-size: 42px; font-weight: 900; }
+  .emotion-喜び { color: #3ddc84; }
+  .emotion-不安 { color: #6aa9ff; }
+  .emotion-怒り { color: #ff6b6b; }
+  .emotion-悲しみ { color: #9aa0a6; }
+  .emotion-期待 { color: #ffd43b; }
+
+  /* Excelリンク */
+  #excel-area a{
+    display:inline-block;
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text);
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.04);
+  }
+  #excel-area a:hover{
+    border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
+  }
+
+  .footer{
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+

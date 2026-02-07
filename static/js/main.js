@@ -52,28 +52,28 @@ document.addEventListener("DOMContentLoaded", () => { // HTMLが全部読み込�
   excelArea.style.display = "block";
 }
 
-
+  //ボタンを押したときの流れ
   btn.addEventListener("click", async () => {
-    const text = (textEl.value || "").trim();
-    if (!text) {
+    const text = (textEl.value || "").trim(); // 前後の空白を削除
+    if (!text) {                               //テキストが空なら
       resultEl.textContent = "文章を入力してね";
       return;
     }
 
     statusEl.textContent = "判定中…";
-
-    try {
-      const res = await fetch("/api/emotion", {
+    try{
+      //感情判定APIを安全に呼び出す
+       const res = await fetch("/api/emotion", {  //サーバーにPOSTで送る
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({ text })
       });
 
-      const data = await res.json();
-      showEmotionOnly(data);
-    } catch (e) {
+      const data = await res.json(); // 結果をJSONで受け取る
+      showEmotionOnly(data);  // 結果を表示する関数を呼び出す
+    } catch (e) {  //エラーが出たときの処理
       resultEl.textContent = "通信エラー";
-    } finally {
+    } finally {  // 最後に必ず実行する処理
       statusEl.textContent = "";
     }
   });
