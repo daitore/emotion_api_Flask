@@ -35,21 +35,19 @@ document.addEventListener("DOMContentLoaded", () => { // HTMLが全部読み込�
     "中立": "😐"
   };
 
-  function showEmotionOnly(obj) {
-  const label = obj.label || "中立";   // 表示用
-  const main = obj.main || "中立";     // CSS用（主）
+  function showEmotionOnly(obj) { // 結果を表示する関数
+  const label = obj.label || "中立";   // 画面表示用データ取り出し
+  const main = obj.main || "中立";     // CSS用（主）データ取り出し
 
-  const emoji = EMOJI_MAP[main] || "😐";
-
-  resultEl.innerHTML = `
-    <div class="emotion emotion-${main}">
+  const emoji = EMOJI_MAP[main] || "😐"; // 絵文字マップから取得
+  resultEl.innerHTML = //    結果を画面に表示
       ${emoji} ${label}
     </div>
   `;
 
-  const text = (textEl.value || "").trim();
-  excelLink.href = `/download.xlsx?text=${encodeURIComponent(text)}`;
-  excelArea.style.display = "block";
+  const text = (textEl.value || "").trim(); // 入力分取得
+  excelLink.href = `/download.xlsx?text=${encodeURIComponent(text)}`; // ダウンロードリンク設定
+  excelArea.style.display = "block"; // 非表示ダウンロードエ欄を表示
 }
 
   //ボタンを押したときの流れ
